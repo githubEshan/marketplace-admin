@@ -9,7 +9,7 @@ export async function POST(
     try {
 
     const { userId } = auth();
-    const body = await req.json
+    const body = await req.json()
 
     const { name } = body;
 
@@ -29,10 +29,9 @@ export async function POST(
         }
     });
 
-    return NextResponse.json(store)
-
+    return NextResponse.json(store);
 } catch (error) {
-    console.log('[STORES_POST]', error)
+    console.log('[STORES_POST]', error);
     return new NextResponse("Internal erorr", {status : 500});
 }
 }
