@@ -5,7 +5,7 @@ import StoreSwitcher from "@/components/store-switcher";
 const Navbar = () => {
     return(
         <div className="border-b">
-            <div className="flex h-16 items-center px-4">
+            <div className="flex h-16 items-center px-4"> 
                 <div>
                     This will be the routes
                 </div>
