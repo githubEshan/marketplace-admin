@@ -4,7 +4,7 @@
 import * as z from "zod";
 import axios from "axios";
 
-import { Store } from "@prisma/client";
+import { Billboard } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,35 +27,49 @@ import { AlertModal } from "@/components/modals/alert-modal";
 import { ApiAlert } from "@/components/ui/api-alert";
 import { useOrigin } from "@/hooks/use-origin";
 
-interface SettingsFormProps {
-    initialData: Store;
-}
-
-type SettingsFormValues = z.infer<typeof formSchema>;
-
 const formSchema = z.object({
-    name: z.string().min(1),
+    label: z.string().min(1),
+    imageUrl: z.string().min(1)
 });
 
+interface BillBoardFormProps {
+    initialData: Billboard | null;
+}
 
-export const SettingsForm: React.FC<SettingsFormProps> = ({
+type BillboardFormValues = z.infer<typeof formSchema>;
+
+
+
+export const BillBoardForm: React.FC<BillBoardFormProps> = ({
     initialData
 }) => {
 
     const params = useParams();
     const router = useRouter();
-    const [open, setOpen] = useState(false)
-    const [loading, setLoading] = useState(false)
     //const for api url from use-origin
     const origin = useOrigin();
 
-    const form = useForm<SettingsFormValues> ({
+
+    const [open, setOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
+
+
+    const title = initialData ? "Edit billboard" : "create billboard";
+    const description = initialData ? "Edit a billboard" : "A a new billboard";
+    const toastMessage = initialData ? "Billboard updated" : "Billboard created.";
+    const  action = initialData ? "Save changes" : "create";
+
+
+    const form = useForm<BillboardFormValues> ({
         resolver: zodResolver(formSchema),
-        defaultValues: initialData
+        defaultValues: initialData || {
+            label: '',
+            imageUrl: ''
+        }
     })
 
 
-    const onSubmit = async(data: SettingsFormValues) => {
+    const onSubmit = async(data: B) => {
         try {
             
             await axios.patch(`/api/stores/${params.storeId}`, data);

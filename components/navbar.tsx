@@ -13,6 +13,7 @@ const Navbar = async() => {
         redirect("/sign-in");
     }
 
+    //used findMany as we are returning all stores in the storeSwitcher interface 
     const stores = await prismadb.store.findMany({
         where: {
             userId,
