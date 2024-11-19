@@ -63,7 +63,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
             toast.success("Store updated")
 
         } catch (error) {
-            toast.error("sonmething went wrong")
+            toast.error("something went wrong")
         }
         finally{
             setLoading(false)
@@ -94,25 +94,26 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
             onConfirm={onDelete}
             loading= {loading}
         />
-        <div className="flex first-letter:items-center justify-between">
+        <div className="flex items-center justify-between">
             <Heading 
-
                 title ="Settings"
-                description ="Manage Stores"  
+                description ="    Manage Stores"  
             />
-            <Button 
-                disabled = {loading}
-                variant = "destructive"
-                size ="icon"
-                onClick = {() => setOpen(true)}  
-            >
-                <Trash className = "h-4 w-4" />
-            </Button>
+            <div className="mr-2 mt-2 space-y-4">
+                <Button 
+                    disabled = {loading}
+                    variant = "destructive"
+                    size ="icon"
+                    onClick = {() => setOpen(true)}  
+                >
+                    <Trash className = "h-4 w-4" />
+                </Button>
+            </div>
         </div>
         <Separator/>
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
-                <div className="grid grid-cols-3 gap-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full ml-2">
+                <div className="grid grid-cols-3 gap-8 ml-2">
                     <FormField 
                         control ={form.control}
                         name ="name"
@@ -127,12 +128,12 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
                         )}
                     />
                 </div>
-                <Button disabled = {loading} className="ml-auto" type="submit">
+                <Button disabled = {loading} className="ml-2 mb-5" type="submit">
                     Save changes
                 </Button>
             </form>
         </Form>
-        <Separator/>
+        <Separator className="space-y-4"/>
         <ApiAlert 
             title="NEXT_PUBLIC_API_URL" description= {`${origin}/api/${params.storeId}`} variant="public" />
         </>

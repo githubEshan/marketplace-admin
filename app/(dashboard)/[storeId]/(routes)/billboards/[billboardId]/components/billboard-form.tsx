@@ -26,6 +26,7 @@ import { Separator } from "@/components/ui/separator";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { ApiAlert } from "@/components/ui/api-alert";
 import { useOrigin } from "@/hooks/use-origin";
+import ImageUpload from "@/components/ui/image-upload";
 
 const formSchema = z.object({
     label: z.string().min(1),
@@ -54,10 +55,10 @@ export const BillBoardForm: React.FC<BillBoardFormProps> = ({
     const [loading, setLoading] = useState(false)
 
 
-    const title = initialData ? "Edit billboard" : "create billboard";
+    const title = initialData ? "Edit billboard" : "Create A Billboard";
     const description = initialData ? "Edit a billboard" : "A a new billboard";
-    const toastMessage = initialData ? "Billboard updated" : "Billboard created.";
-    const  action = initialData ? "Save changes" : "create";
+    const toastMessage = initialData ? "Billboard updated" : "Billboard Created.";
+    const action = initialData ? "Save changes" : "Create";
 
 
     const form = useForm<BillboardFormValues> ({
@@ -69,7 +70,7 @@ export const BillBoardForm: React.FC<BillBoardFormProps> = ({
     })
 
 
-    const onSubmit = async(data: B) => {
+    const onSubmit = async(data: BillboardFormValues) => {
         try {
             
             await axios.patch(`/api/stores/${params.storeId}`, data);
@@ -111,30 +112,50 @@ export const BillBoardForm: React.FC<BillBoardFormProps> = ({
         <div className="flex first-letter:items-center justify-between">
             <Heading 
 
-                title ="Settings"
-                description ="Manage Stores"  
+                title = {title}
+                description = {description}
             />
-            <Button 
-                disabled = {loading}
-                variant = "destructive"
-                size ="icon"
-                onClick = {() => setOpen(true)}  
-            >
-                <Trash className = "h-4 w-4" />
-            </Button>
+            { initialData && (            
+                <Button 
+                    disabled = {loading}
+                    variant = "destructive"
+                    size ="icon"
+                    onClick = {() => setOpen(true)}  
+                >
+                    <Trash className = "h-4 w-4" />
+                </Button>
+            )}
         </div>
         <Separator/>
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+                <FormField 
+                        control ={form.control}
+                        name ="imageUrl"
+                        render= {({ field }) => (
+                            <FormItem>
+                                <FormLabel>Background Image</FormLabel>
+                                <FormControl>
+                                    <ImageUpload
+                                        value = {field.value? [field.value] : []}    
+                                        disabled = {loading}
+                                        onChange={(url) => field.onChange(url)}
+                                        onRemove={() => field.onChange("")}
+                                    />
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
                 <div className="grid grid-cols-3 gap-8">
                     <FormField 
                         control ={form.control}
-                        name ="name"
+                        name ="label"
                         render= {({ field }) => (
                             <FormItem>
-                                <FormLabel>Name</FormLabel>
+                                <FormLabel>Label</FormLabel>
                                 <FormControl>
-                                    <Input disabled = {loading} placeholder = "Store name"  {...field} />
+                                    <Input disabled = {loading} placeholder = "Billboard Label"  {...field} />
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>
@@ -142,7 +163,7 @@ export const BillBoardForm: React.FC<BillBoardFormProps> = ({
                     />
                 </div>
                 <Button disabled = {loading} className="ml-auto" type="submit">
-                    Save changes
+                    {action}
                 </Button>
             </form>
         </Form>
