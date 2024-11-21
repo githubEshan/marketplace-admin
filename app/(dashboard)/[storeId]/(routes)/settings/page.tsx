@@ -18,7 +18,7 @@ const SettingsPage: React.FC<SettingsPageprops> =  async ({
     params
 }) => {
     
-    const { userId } = auth()
+    const { userId } =  auth()
 
     if(!userId){
         redirect("/sign-in");
