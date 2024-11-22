@@ -24,8 +24,6 @@ import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { ApiAlert } from "@/components/ui/api-alert";
-import { useOrigin } from "@/hooks/use-origin";
 import ImageUpload from "@/components/ui/image-upload";
 
 const formSchema = z.object({
@@ -44,8 +42,6 @@ export const BillBoardForm: React.FC<BillBoardFormProps> = ({
 }) => {
   const params = useParams();
   const router = useRouter();
-  //const for api url from use-origin
-  const origin = useOrigin();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -75,6 +71,7 @@ export const BillBoardForm: React.FC<BillBoardFormProps> = ({
         await axios.post(`/api/${params.storeId}/billboards`, data);
       }
       router.refresh();
+      router.push(`/${params.storeId}/billboards`)
       toast.success(toastMessage);
     } catch (error) {
       toast.error("something went wrong");
@@ -85,9 +82,7 @@ export const BillBoardForm: React.FC<BillBoardFormProps> = ({
 
   const onDelete = async () => {
     try {
-      await axios.delete(
-        `/api/${params.storeId}/billboards/${params.billboardId}`
-      );
+      await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`);
       router.refresh();
       router.push("/");
       toast.success("Store deleted");
@@ -169,11 +164,6 @@ export const BillBoardForm: React.FC<BillBoardFormProps> = ({
         </form>
       </Form>
       <Separator />
-      <ApiAlert
-        title="NEXT_PUBLIC_API_URL"
-        description={`${origin}/api/${params.storeId}`}
-        variant="public"
-      />
     </>
   );
 };
