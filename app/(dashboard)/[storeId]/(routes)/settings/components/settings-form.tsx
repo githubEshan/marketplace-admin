@@ -97,7 +97,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
         <div className="flex items-center justify-between">
             <Heading 
                 title ="Settings"
-                description ="    Manage Stores"  
+                description ="Manage Stores"  
             />
             <div className="mr-2 mt-2 space-y-4">
                 <Button 
