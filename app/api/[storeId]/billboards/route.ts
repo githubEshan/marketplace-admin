@@ -58,12 +58,12 @@ export async function POST(
 
 
 export async function GET(
-    req: Request,
+    _req: Request,
     { params }: {params: {storeId : string}}
 ){
     try {
 
-        if(params.storeId) {
+        if(!params.storeId) {
             return new NextResponse("Store id is required", { status: 400 })
         }
 
