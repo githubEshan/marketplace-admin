@@ -62,4 +62,6 @@ model Product {
   name String
   price Decimal
   imageUrl String[]
+  condition String
+  location String
 }
