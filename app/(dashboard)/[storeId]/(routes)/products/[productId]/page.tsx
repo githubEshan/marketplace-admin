@@ -1,7 +1,11 @@
 import prismadb from "@/lib/prismadb";
-import { ProductForm } from "./components/billboard-form";
+import { ProductForm } from "./components/products-form";
 
-const ProductPage = async ({ params }: { params: { productId: string } }) => {
+const ProductPage = async ({
+  params,
+}: {
+  params: { productId: string; storeId: string };
+}) => {
   try {
     const { productId } = params;
 
@@ -18,10 +22,21 @@ const ProductPage = async ({ params }: { params: { productId: string } }) => {
       },
     });
 
+    const categories = await prismadb.category.findMany({
+      where: {
+        storeId: params.storeId,
+      },
+    });
+
+
     return (
       <div className="flex-col">
         <div className="space-y-2 p-8">
-          <ProductForm initialData={product} />
+          <ProductForm 
+          categories = {categories}
+          initialData={product} 
+          />
+
         </div>
       </div>
     );
