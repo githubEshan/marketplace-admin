@@ -3,6 +3,8 @@
 import * as z from "zod";
 import axios from "axios";
 
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
 import { Category, Image, Product } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -11,6 +13,7 @@ import { useState } from "react";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -35,11 +38,12 @@ import ImageUpload from "@/components/ui/image-upload";
 
 const formSchema = z.object({
   name: z.string().min(1),
+  location: z.string().min(1),
   images: z.object({ url: z.string() }).array(),
   description: z.string().min(1),
   price: z.coerce.number().min(1),
   categoryId: z.string().min(1),
-  isListed: z.boolean().default(false).optional(),
+  condition: z.enum(["new", "used"]),
 });
 
 type ProductFormValues = z.infer<typeof formSchema>;
@@ -74,6 +78,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       ? {
           ...initialData,
           price: parseFloat(String(initialData?.price)),
+          condition:
+            initialData.condition === "new" || initialData.condition === "used"
+              ? initialData.condition
+              : "new",
         }
       : {
           name: "",
@@ -81,7 +89,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           description: "",
           price: 0,
           categoryId: "",
-          isListed: false,
+          location: "",
+          condition: "new",
         },
   });
 
@@ -90,14 +99,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       setLoading(true);
       if (initialData) {
         await axios.patch(
-          `/api/${params.storeId}/billboards/${params.billboardId}`,
+          `/api/${params.storeId}/products/${params.productId}`,
           data
         );
       } else {
-        await axios.post(`/api/${params.storeId}/billboards`, data);
+        await axios.post(`/api/${params.storeId}/products`, data);
       }
       router.refresh();
-      router.push(`/${params.storeId}/billboards`);
+      router.push(`/${params.storeId}/products`);
       toast.success(toastMessage);
     } catch (error) {
       toast.error("something went wrong");
@@ -108,14 +117,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 
   const onDelete = async () => {
     try {
-      await axios.delete(
-        `/api/${params.storeId}/billboards/${params.billboardId}`
-      );
+      await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
       router.refresh();
       router.push("/");
-      toast.success("Store deleted");
+      toast.success("product deleted");
     } catch (error) {
-      toast.error("Make sure you removed all products and categories first");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
       setOpen(false);
@@ -189,7 +196,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Add Product Description"
+                      placeholder="Add Product Name"
                       {...field}
                     />
                   </FormControl>
@@ -219,7 +226,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price</FormLabel>
+                  <FormLabel>$Price</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -232,39 +239,89 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 </FormItem>
               )}
             />
-          </div>
-          <FormField
-            control={form.control}
-            name="categoryId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Category Id</FormLabel>
-                <Select
-                  disabled={loading}
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  defaultValue={field.value}
-                >
+            <FormField
+              control={form.control}
+              name="categoryId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Product Category</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Select a category"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="condition"
+              render={({ field }) => (
+                <FormItem className="space-y-3 space-x-3">
+                  <FormLabel>Product Condition</FormLabel>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        defaultValue={field.value}
-                        placeholder="Select a category"
-                      />
-                    </SelectTrigger>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex space-y-1 border"
+                    >
+                      <FormItem className="flex items-center space-x-3 space-y-0  ">
+                        <FormControl>
+                          <RadioGroupItem value="new" />
+                        </FormControl>
+                        <FormLabel className="flex items-centerfont-normal">
+                          New
+                        </FormLabel>
+                      </FormItem>
+                      <FormItem className=" flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="used" />
+                        </FormControl>
+                        <FormLabel className="font-normal">Used</FormLabel>
+                      </FormItem>
+                    </RadioGroup>
                   </FormControl>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Add location for product pick up"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}
           </Button>
