@@ -28,7 +28,7 @@ import ImageUpload from "@/components/ui/image-upload";
 
 const formSchema = z.object({
   label: z.string().min(1),
-  imageUrl: z.string().min(1),
+  imageUrl: z.string().min(1)
 });
 
 interface BillBoardFormProps {
@@ -71,7 +71,7 @@ export const BillBoardForm: React.FC<BillBoardFormProps> = ({
         await axios.post(`/api/${params.storeId}/billboards`, data);
       }
       router.refresh();
-      router.push(`/${params.storeId}/billboards`)
+      router.push(`/${params.storeId}/billboards`);
       toast.success(toastMessage);
     } catch (error) {
       toast.error("something went wrong");
@@ -82,7 +82,9 @@ export const BillBoardForm: React.FC<BillBoardFormProps> = ({
 
   const onDelete = async () => {
     try {
-      await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`);
+      await axios.delete(
+        `/api/${params.storeId}/billboards/${params.billboardId}`
+      );
       router.refresh();
       router.push("/");
       toast.success("Store deleted");
