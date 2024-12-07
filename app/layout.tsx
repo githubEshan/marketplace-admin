@@ -7,8 +7,6 @@ import { ModalProvider } from "@/providers/modal-provider";
 import prismadb from "@/lib/prismadb";
 import { ToastProvider } from "@/providers/toast-provider";
 
-
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -21,7 +19,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard",
+  title: "MU Backend",
   description: "Admin Dashboard",
 };
 
@@ -30,18 +28,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
   return (
     <ClerkProvider>
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ToastProvider/>
-        <ModalProvider/>
-        {children}
-      </body>
-    </html>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <ToastProvider />
+          <ModalProvider />
+          {children}
+        </body>
+      </html>
     </ClerkProvider>
   );
 }
