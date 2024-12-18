@@ -99,6 +99,7 @@ export async function PATCH(
                 
             },
             data: { 
+                userId,
                 name,
                 description, 
                 price,

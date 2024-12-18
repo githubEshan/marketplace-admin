@@ -56,6 +56,7 @@ model Category {
 
 model Product {
   id          String      @id @default(uuid())
+  userId      String
   storeId     String
   store       Store       @relation("StoreToProduct", fields: [storeId], references: [id])
   categoryId  String

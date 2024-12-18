@@ -1,6 +1,5 @@
-
-
 const DashboardPage = () => {
+
     return(
         <>
         <div>
