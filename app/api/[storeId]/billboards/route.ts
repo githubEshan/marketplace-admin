@@ -72,6 +72,7 @@ export async function GET(
             where: {
                 storeId: params.storeId
             }
+            
         });
     
         return NextResponse.json(billboard);
