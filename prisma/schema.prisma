@@ -110,3 +110,21 @@ model OrderItem {
   @@index([orderId])
   @@index([productId])
 }
+
+model Message {
+  id        String   @id @default(uuid())
+  text      String
+  createdAt DateTime @default(now())
+  chatId    String
+
+  Chat Chat @relation(fields: [chatId], references: [id])
+
+  @@index([chatId])
+}
+
+model Chat {
+  id         String    @id @default(uuid())
+  fromUserId String
+  toUserId   String
+  Message    Message[]
+}
