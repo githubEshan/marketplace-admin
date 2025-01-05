@@ -33,7 +33,7 @@ export const ChatClient: React.FC<ChatClientProps> = ({ data }) => {
       </div>
       <div className="mr-8 ml-8 mt-4">
         <Separator />
-        <DataTable searchKey="label" columns={columns} data={data} />
+        <DataTable searchKey="fromUserId" columns={columns} data={data} />
         <Heading title="API" description="API calls for chats" />
         <Separator />
         <ApiList entityName="chats" entityIdName="chatId"></ApiList>

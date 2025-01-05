@@ -15,6 +15,7 @@ const ChatsPage = async ({ params }: { params: { storeId: string } }) => {
     id: item.id,
     fromUserId: item.fromUserId,
     toUserId: item.toUserId,
+    productId: item.productId,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
 

@@ -29,6 +29,7 @@ import ImageUpload from "@/components/ui/image-upload";
 const formSchema = z.object({
   fromUserId: z.string().min(1),
   toUserId: z.string().min(1),
+  productId: z.string().min(1),
 });
 
 interface ChatFormProps {
@@ -54,6 +55,7 @@ export const ChatForm: React.FC<ChatFormProps> = ({ initialData }) => {
     defaultValues: initialData || {
       fromUserId: "",
       toUserId: "",
+      productId: "",
     },
   });
 
@@ -80,7 +82,7 @@ export const ChatForm: React.FC<ChatFormProps> = ({ initialData }) => {
 
   const onDelete = async () => {
     try {
-      await axios.delete(`/api/${params.storeId}/billboards/${params.chatId}`);
+      await axios.delete(`/api/${params.storeId}/chats/${params.chatId}`);
       router.refresh();
       router.push("/");
       toast.success("Store deleted");
@@ -119,6 +121,25 @@ export const ChatForm: React.FC<ChatFormProps> = ({ initialData }) => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
+          <div className="grid grid-cols-3 gap-8">
+            <FormField
+              control={form.control}
+              name="productId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>productId Reference</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="proudct Id"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <div className="grid grid-cols-3 gap-8">
             <FormField
               control={form.control}
