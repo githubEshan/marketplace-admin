@@ -17,6 +17,9 @@ export async function GET(
         ({
             where: {
                 id: params.chatId,
+            },
+            include: {
+                messages: true
             }
         });
 

@@ -87,6 +87,12 @@ export async function GET(
         const chat = await prismadb.chat.findMany({
             where: {
                 storeId: params.storeId
+            }, 
+            include : {
+                messages: true
+            },
+            orderBy: {
+                createdAt: 'desc'
             }
             
         });

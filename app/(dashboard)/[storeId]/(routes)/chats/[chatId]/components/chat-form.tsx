@@ -37,7 +37,7 @@ const formSchema = z.object({
         text: z.string().min(1, "Message text cannot be empty"),
       })
     )
-    .min(0),
+    .optional(),
 });
 
 interface ChatFormProps {
