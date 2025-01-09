@@ -39,11 +39,13 @@ export async function PATCH(
         const { userId } = auth();
         const body = await req.json()
 
-        const { fromUserId, toUserId, productId } = body;
-
+        const { fromUserId, toUserId, productId, chatName, messages } = body;
 
         if(!userId){
             return new NextResponse("Unauthorised", { status: 401 })
+        }
+        if(!messages){
+            return new NextResponse("Message is missing", { status: 401 })
         }
 
         if(!fromUserId){
@@ -62,22 +64,40 @@ export async function PATCH(
             where: {
                 id : params.storeId,
                 userId
-            }
+            }, 
         })
 
         if(!storeByUserId) {
             return new NextResponse("Unauthorized", {status: 403})
         }
 
-        const chat = await prismadb.chat.updateMany({
+        await prismadb.chat.update({
             where: {
                 id: params.chatId
-                
             },
             data: {
+                chatName,
                 fromUserId,
                 toUserId,
                 productId,
+                messages : {
+                    deleteMany : {}
+                }
+            }
+        });
+
+        const chat = await prismadb.chat.update({
+            where: {
+                id: params.chatId
+            },
+            data: {
+                messages: {
+                    createMany: {
+                        data: [
+                            ...messages.map((message : { text: string }) => message),
+                        ]
+                    }
+                }
             }
         });
 
@@ -122,7 +142,7 @@ export async function DELETE(
         const chat = await prismadb.chat.deleteMany({
             where: {
                 id: params.chatId,
-            }
+            }, 
         });
 
         return NextResponse.json(chat);
