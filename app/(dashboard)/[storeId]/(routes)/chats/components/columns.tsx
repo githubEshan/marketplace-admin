@@ -10,10 +10,15 @@ export type ChatColumn = {
   fromUserId: string;
   toUserId: string;
   productId: string;
+  chatName: string;
   createdAt: string;
 };
 
 export const columns: ColumnDef<ChatColumn>[] = [
+  {
+    accessorKey: "chatName",
+    header: "Chat Name",
+  },
   {
     accessorKey: "fromUserId",
     header: "From User",

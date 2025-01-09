@@ -4,18 +4,21 @@ import { NextResponse } from "next/server";
 
 export async function POST(
     req: Request,
-    { params }: {params: {storeId : string}}
+    { params }: {params: {storeId : string, productId: string}}
 ){
     try {
 
         const { userId } = auth();
         const body = await req.json();
-        const { fromUserId, toUserId, productId } = body;
+        const { fromUserId, toUserId, productId, chatName, messages } = body;
     
     
     
         if(!userId){
             return new NextResponse("Unauthenticated", { status: 401 })
+        }
+        if(!messages){
+            return new NextResponse("Please include a message", { status: 401 })
         }
     
         if(!fromUserId){
@@ -48,9 +51,17 @@ export async function POST(
         const chat = await prismadb.chat.create({
             data: {
                 fromUserId,
+                chatName,
                 toUserId,
                 productId,
-                storeId: params.storeId
+                storeId: params.storeId,
+                messages : {
+                    createMany : {
+                        data : [
+                            ...messages.map((message: {text: string})=> message)
+                        ]
+                    }
+                }
             }
         });
     

@@ -3,9 +3,9 @@
 import * as z from "zod";
 import axios from "axios";
 
-import { Chat } from "@prisma/client";
-import { Trash } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Chat, Message } from "@prisma/client";
+import { Plus, Trash } from "lucide-react";
+import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import {
@@ -24,16 +24,28 @@ import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { AlertModal } from "@/components/modals/alert-modal";
-import ImageUpload from "@/components/ui/image-upload";
 
 const formSchema = z.object({
   fromUserId: z.string().min(1),
   toUserId: z.string().min(1),
   productId: z.string().min(1),
+  chatName: z.string().min(1),
+  messages: z
+    .array(
+      z.object({
+        userId: z.string().min(1),
+        text: z.string().min(1, "Message text cannot be empty"),
+      })
+    )
+    .min(0),
 });
 
 interface ChatFormProps {
-  initialData: Chat | null;
+  initialData:
+    | (Chat & {
+        messages: Message[];
+      })
+    | null;
 }
 
 type ChatFormValues = z.infer<typeof formSchema>;
@@ -56,7 +68,14 @@ export const ChatForm: React.FC<ChatFormProps> = ({ initialData }) => {
       fromUserId: "",
       toUserId: "",
       productId: "",
+      chatName: "",
+      messages: [],
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "messages",
   });
 
   const onSubmit = async (data: ChatFormValues) => {
@@ -143,6 +162,25 @@ export const ChatForm: React.FC<ChatFormProps> = ({ initialData }) => {
           <div className="grid grid-cols-3 gap-8">
             <FormField
               control={form.control}
+              name="chatName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Chat Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Chat Name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-8">
+            <FormField
+              control={form.control}
               name="fromUserId"
               render={({ field }) => (
                 <FormItem>
@@ -177,6 +215,62 @@ export const ChatForm: React.FC<ChatFormProps> = ({ initialData }) => {
                 </FormItem>
               )}
             />
+          </div>
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Messages</h3>
+            {fields.map((item, index) => (
+              <div key={item.id} className="flex items-center gap-4">
+                <FormField
+                  control={form.control}
+                  name={`messages.${index}.userId`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>User ID</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={loading}
+                          placeholder="User ID"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`messages.${index}.text`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Message</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={loading}
+                          placeholder="Message text"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={() => remove(index)}
+                >
+                  <Trash className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => append({ userId: "", text: "" })}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Message
+            </Button>
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

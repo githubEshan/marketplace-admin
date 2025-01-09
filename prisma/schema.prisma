@@ -115,9 +115,10 @@ model OrderItem {
 
 model Chat {
   id         String    @id @default(uuid())
+  chatName   String
   fromUserId String
   toUserId   String
-  message    Message[]
+  messages   Message[]
   storeId    String
   store      Store     @relation("StoreToChat", fields: [storeId], references: [id])
   productId  String
@@ -130,6 +131,7 @@ model Chat {
 
 model Message {
   id        String   @id @default(uuid())
+  userId    String
   text      String
   createdAt DateTime @default(now())
   chatId    String

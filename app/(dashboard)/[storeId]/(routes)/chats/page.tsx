@@ -13,6 +13,7 @@ const ChatsPage = async ({ params }: { params: { storeId: string } }) => {
 
   const formattedChat: ChatColumn[] = chats.map((item) => ({
     id: item.id,
+    chatName: item.chatName,
     fromUserId: item.fromUserId,
     toUserId: item.toUserId,
     productId: item.productId,
