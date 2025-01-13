@@ -10,7 +10,7 @@ export async function GET(
 
     try {
         if(!params.messageId){
-            return new NextResponse("Billboard ID is required", {status: 400})
+            return new NextResponse("Message ID is required", {status: 400})
         }
 
         const message = await prismadb.message.findUnique
