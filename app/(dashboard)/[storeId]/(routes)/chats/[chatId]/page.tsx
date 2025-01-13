@@ -13,6 +13,9 @@ const ChatPage = async ({ params }: { params: { chatId: string } }) => {
       where: {
         id: chatId,
       },
+      include: {
+        messages: true,
+      },
     });
 
     return (

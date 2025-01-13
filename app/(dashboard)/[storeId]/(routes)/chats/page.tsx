@@ -9,6 +9,9 @@ const ChatsPage = async ({ params }: { params: { storeId: string } }) => {
     where: {
       storeId: params.storeId,
     },
+    include: {
+      messages: true,
+    },
   });
 
   const formattedChat: ChatColumn[] = chats.map((item) => ({
@@ -17,6 +20,7 @@ const ChatsPage = async ({ params }: { params: { storeId: string } }) => {
     fromUserId: item.fromUserId,
     toUserId: item.toUserId,
     productId: item.productId,
+    messages: item.messages,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
 
