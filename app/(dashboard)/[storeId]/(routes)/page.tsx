@@ -4,14 +4,9 @@ import { Separator } from "@/components/ui/separator";
 import { formatter } from "@/lib/utils";
 import { DollarSign } from "lucide-react";
 
-interface DashboardPageProps {
-  params: {
-    storeId: string;
-  };
-}
+interface DashboardPageProps {}
 
-const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
-
+const DashboardPage: React.FC<DashboardPageProps> = async () => {
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
