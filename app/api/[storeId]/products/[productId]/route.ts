@@ -144,8 +144,13 @@ export async function DELETE(
 ) {
 
     try {
-        const { userId } = auth();
 
+        const body = await req.json()
+
+        const { 
+            userId,
+            
+         } = body
 
         if(!userId){
             return new NextResponse("Unauthenticated", { status: 401 })
@@ -155,21 +160,10 @@ export async function DELETE(
             return new NextResponse("Product ID is required", {status: 400})
         }
 
-        const storeByUserId = await prismadb.store.findFirst({
-            where: {
-                id : params.storeId,
-                userId
-            }
-        })
-
-        if(!storeByUserId) {
-            return new NextResponse("Unauthorized", {status: 403})
-        }
-
-
         const product = await prismadb.product.deleteMany({
             where: {
                 id: params.productId,
+                userId
             }
         });
 
