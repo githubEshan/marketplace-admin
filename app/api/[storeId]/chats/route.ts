@@ -7,14 +7,9 @@ export async function POST(
     { params }: {params: {storeId : string, productId: string}}
 ){
     try {
-
         
         const body = await req.json();
         const { fromUserId, toUserId, productId, chatName, messages } = body;
-    
-    
-    
-    
     
         if(!fromUserId){
             return new NextResponse("From UserId is required", { status: 400 })
