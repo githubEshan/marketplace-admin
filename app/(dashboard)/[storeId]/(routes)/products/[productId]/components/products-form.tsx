@@ -13,7 +13,6 @@ import { useState } from "react";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -35,6 +34,7 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { AlertModal } from "@/components/modals/alert-modal";
 import ImageUpload from "@/components/ui/image-upload";
+import { useUser } from "@clerk/nextjs";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -44,6 +44,7 @@ const formSchema = z.object({
   price: z.coerce.number().min(1),
   categoryId: z.string().min(1),
   condition: z.enum(["new", "used"]),
+  userId: z.string().min(1),
 });
 
 type ProductFormValues = z.infer<typeof formSchema>;
@@ -64,6 +65,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const params = useParams();
   const router = useRouter();
 
+  const currentUser = useUser();
+  const userId = currentUser.user?.id;
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -82,6 +86,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             initialData.condition === "new" || initialData.condition === "used"
               ? initialData.condition
               : "new",
+          userId: userId || "",
         }
       : {
           name: "",
@@ -91,19 +96,21 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           categoryId: "",
           location: "",
           condition: "new",
+          userId: userId || "",
         },
   });
 
   const onSubmit = async (data: ProductFormValues) => {
     try {
+      const payload = { ...data, userId };
       setLoading(true);
       if (initialData) {
         await axios.patch(
           `/api/${params.storeId}/products/${params.productId}`,
-          data
+          payload
         );
       } else {
-        await axios.post(`/api/${params.storeId}/products`, data);
+        await axios.post(`/api/${params.storeId}/products`, payload);
       }
       router.refresh();
       router.push(`/${params.storeId}/products`);

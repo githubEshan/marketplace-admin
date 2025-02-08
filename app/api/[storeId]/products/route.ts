@@ -1,16 +1,16 @@
 import prismadb from "@/lib/prismadb";
-import { auth } from "@clerk/nextjs/server";
+
 import { NextResponse } from "next/server";
 
 export async function POST(
     req: Request,
-    { params }: {params: {storeId : string}}
+    { params }: {params: { storeId : string}}
 ){
     try {
 
-        const { userId } = auth();
         const body = await req.json();
         const { 
+            userId,
             images, 
             name,
             description, 
@@ -26,7 +26,7 @@ export async function POST(
             return new NextResponse("Unauthenticated", { status: 401 })
         }
         
-    
+        console.log(userId)
         if(!name){
             return new NextResponse("Name is required", { status: 400 })
         }
@@ -67,6 +67,7 @@ export async function POST(
 
         const products = await prismadb.product.create({
         data: {
+                userId,
                 storeId: params.storeId,
                 name,
                 description, 

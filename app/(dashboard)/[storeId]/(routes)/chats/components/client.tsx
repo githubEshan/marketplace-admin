@@ -5,27 +5,27 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { CategoryColumn, columns } from "./columns";
+import { ChatColumn, columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import { ApiList } from "@/components/ui/api-list";
 
-interface CategoryClientProps {
-  data: CategoryColumn[];
+interface ChatClientProps {
+  data: ChatColumn[];
 }
 
-export const CategoryClient: React.FC<CategoryClientProps> = ({ data }) => {
+export const ChatClient: React.FC<ChatClientProps> = ({ data }) => {
   const params = useParams();
   const router = useRouter();
   return (
     <>
       <div className="mr-8 ml-5 flex items-center justify-between">
         <Heading
-          title={`Categories (${data.length})`}
-          description="Manage Categories for your store"
+          title={`Chats (${data.length})`}
+          description="Manage Chats for your store"
         />
         <Button
           className="mt-3.5"
-          onClick={() => router.push(`/${params.storeId}/categories/new`)}
+          onClick={() => router.push(`/${params.storeId}/chats/new`)}
         >
           <Plus className="mr-2 h-4 w-4" />
           Add new
@@ -33,10 +33,10 @@ export const CategoryClient: React.FC<CategoryClientProps> = ({ data }) => {
       </div>
       <div className="mr-8 ml-8 mt-4">
         <Separator />
-        <DataTable searchKey="name" columns={columns} data={data} />
-        <Heading title="API" description="API calls for Categories" />
+        <DataTable searchKey="fromUserId" columns={columns} data={data} />
+        <Heading title="API" description="API calls for chats" />
         <Separator />
-        <ApiList entityName="categories" entityIdName="categoryId"></ApiList>
+        <ApiList entityName="chats" entityIdName="chatId"></ApiList>
       </div>
     </>
   );

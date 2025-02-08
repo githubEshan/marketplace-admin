@@ -33,17 +33,18 @@ export const ApiList: React.FC<ApiListProps> = ({
       <ApiAlert
         title="POST"
         variant="public"
-        description={`${baseUrl}/products/`}
+        description={`${baseUrl}/${entityName}`}
       />
 
       <ApiAlert
         title="PATCH"
-        variant="admin"
+        variant="public"
         description={`${baseUrl}/${entityName}/{${entityIdName}}`}
       />
+
       <ApiAlert
         title="DELETE"
-        variant="admin"
+        variant="public"
         description={`${baseUrl}/${entityName}/{${entityIdName}}`}
       />
     </>

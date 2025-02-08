@@ -5,54 +5,50 @@ import { NextResponse } from "next/server";
 
 export async function GET(
     req: Request,
-    { params }: {params: {categoryId : string}}
+    { params }: {params: {messageId : string}}
 ) {
 
     try {
-        if(!params.categoryId){
-            return new NextResponse("Category ID is required", {status: 400})
+        if(!params.messageId){
+            return new NextResponse("Message ID is required", {status: 400})
         }
 
-        const category = await prismadb.category.findUnique({
+        const message = await prismadb.message.findUnique
+        ({
             where: {
-                id: params.categoryId
-            },
-            include : {
-                billboard: true,
+                id: params.messageId,
             }
         });
 
-        return NextResponse.json(category);
+        return NextResponse.json(message);
     }   catch(error){
-        console.log('[CATEGORY_GET]', error);
+        console.log('[MESSAGE_GET]', error);
         return new NextResponse("Internal erorr", {status : 500});
     }
 };
 
 export async function PATCH(
     req: Request,
-    { params }: {params: {storeId : string, categoryId : string}}
+    { params }: {params: {storeId : string, messageId : string}}
 ) {
 
     try {
-        const { userId } = auth();
         const body = await req.json()
 
-        const { name, billboardId} = body;
+        const { text, userId } = body;
 
 
         if(!userId){
             return new NextResponse("Unauthorised", { status: 401 })
         }
 
-        if(!name){
-            return new NextResponse("Name is required", {status: 400})
+        if(!text){
+            return new NextResponse("text is required", {status: 400})
         }
 
-        if(!billboardId){
-            return new NextResponse("BillboardId is required", {status: 400})
+        if(!params.messageId){
+            return new NextResponse("Message ID is required", {status: 400})
         }
-
 
         const storeByUserId = await prismadb.store.findFirst({
             where: {
@@ -65,29 +61,29 @@ export async function PATCH(
             return new NextResponse("Unauthorized", {status: 403})
         }
 
-        const category = await prismadb.category.updateMany({
+        const billboard = await prismadb.message.updateMany({
             where: {
-                id: params.categoryId
+                id: params.messageId
                 
             },
             data: {
-                name,
-                billboardId
+                text,
+                userId,
             }
         });
 
-        return NextResponse.json(category);
+        return NextResponse.json(billboard);
     }
 
     catch(error){
-        console.log('[CATEGORY_PATCH]', error);
+        console.log('[MESSAGE_PATCH]', error);
         return new NextResponse("Internal erorr", {status : 500});
     }
 };
 
 export async function DELETE(
     req: Request,
-    { params }: {params: {storeId : string, categoryId : string}}
+    { params }: {params: {storeId : string, messageId : string}}
 ) {
 
     try {
@@ -98,8 +94,8 @@ export async function DELETE(
             return new NextResponse("Unauthenticated", { status: 401 })
         }
 
-        if(!params.categoryId){
-            return new NextResponse("Category ID is required", {status: 400})
+        if(!params.messageId){
+            return new NextResponse("message ID is required", {status: 400})
         }
 
         const storeByUserId = await prismadb.store.findFirst({
@@ -114,17 +110,17 @@ export async function DELETE(
         }
 
 
-        const category = await prismadb.category.deleteMany({
+        const message = await prismadb.message.deleteMany({
             where: {
-                id: params.categoryId,
+                id: params.messageId,
             }
         });
 
-        return NextResponse.json(category);
+        return NextResponse.json(message);
     }
 
     catch(error){
-        console.log('[CATEGORY_DELETE]', error);
+        console.log('[MESSAGE_DELETE]', error);
         return new NextResponse("Internal erorr", {status : 500});
     }
 };
