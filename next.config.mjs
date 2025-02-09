@@ -7,7 +7,7 @@ const nextConfig = {
                 headers: [
                     {
                         key: "Access-Control-Allow-Origin",
-                        value: process.env.FRONTEND_ORIGIN 
+                        value: process.env.FRONTEND_ORIGIN,
                     },
                     {
                         key: "Access-Control-Allow-Methods",
