@@ -162,14 +162,14 @@ export async function DELETE(
 
         let product;
         if (userId === process.env.USER_ID) {
-            product = await prismadb.product.delete({
+            product = await prismadb.product.deleteMany({
                 where: {
                     id: params.productId,
                 }
             });
         } else {
 
-            product = await prismadb.product.delete({
+            product = await prismadb.product.deleteMany({
                 where: {
                     id: params.productId,
                     userId: userId, 
