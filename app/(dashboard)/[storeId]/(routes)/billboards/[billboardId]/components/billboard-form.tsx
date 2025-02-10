@@ -89,7 +89,7 @@ export const BillBoardForm: React.FC<BillBoardFormProps> = ({
       router.push("/");
       toast.success("Store deleted");
     } catch (error) {
-      toast.error("Make sure you removed all prodyucts and categories first");
+      toast.error("Make sure you removed all products and categories first");
     } finally {
       setLoading(false);
       setOpen(false);

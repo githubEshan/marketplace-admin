@@ -106,7 +106,7 @@ export const ChatForm: React.FC<ChatFormProps> = ({ initialData }) => {
       router.push("/");
       toast.success("Store deleted");
     } catch (error) {
-      toast.error("Make sure you removed all prodyucts and categories first");
+      toast.error("Make sure you remove all messages first");
     } finally {
       setLoading(false);
       setOpen(false);
