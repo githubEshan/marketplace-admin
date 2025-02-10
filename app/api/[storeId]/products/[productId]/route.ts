@@ -159,12 +159,23 @@ export async function DELETE(
             return new NextResponse("Product ID is required", {status: 400})
         }
 
-        const product = await prismadb.product.delete({
-            where: {
-                id: params.productId,
-                userId
-            }
-        });
+
+        let product;
+        if (userId === process.env.USER_ID) {
+            product = await prismadb.product.delete({
+                where: {
+                    id: params.productId,
+                }
+            });
+        } else {
+
+            product = await prismadb.product.delete({
+                where: {
+                    id: params.productId,
+                    userId: userId, 
+                }
+            });
+        }
 
         return NextResponse.json(product);
     }
