@@ -1,4 +1,5 @@
 import prismadb from "@/lib/prismadb";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 
@@ -143,13 +144,10 @@ export async function DELETE(
 ) {
 
     try {
+        
+        const body = await req.json();
 
-        const body = await req.json()
-
-        const { 
-            userId,
-            
-         } = body
+        const {userId} = body;
 
         if(!userId){
             return new NextResponse("Unauthenticated", { status: 401 })
@@ -159,23 +157,22 @@ export async function DELETE(
             return new NextResponse("Product ID is required", {status: 400})
         }
 
-
         let product;
-        if (userId === process.env.USER_ID) {
+
+        if(userId === process.env.USER_ID){
             product = await prismadb.product.deleteMany({
                 where: {
                     id: params.productId,
                 }
             });
         } else {
-
             product = await prismadb.product.deleteMany({
                 where: {
                     id: params.productId,
-                    userId: userId, 
+                    userId,
                 }
-            });
-        }
+        });}
+        
 
         return NextResponse.json(product);
     }

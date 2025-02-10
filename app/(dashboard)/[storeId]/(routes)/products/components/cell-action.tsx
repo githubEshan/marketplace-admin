@@ -15,6 +15,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 import { AlertModal } from "@/components/modals/alert-modal";
+import { useUser } from "@clerk/nextjs";
 
 interface CellActionProps {
   data: ProductColumn;
@@ -28,19 +29,25 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
   const router = useRouter();
   const params = useParams();
-
+  const currentUser = useUser();
+  const userId = currentUser.user?.id;
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
   const onDelete = async () => {
     try {
-      await axios.delete(`/api/${params.storeId}/products/${data.id}`);
+      await axios.delete(`/api/${params.storeId}/products/${data.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: { userId },
+      });
       router.refresh();
       router.push(`/${params.storeId}/products`);
       toast.success("Product deleted");
     } catch (error) {
       toast.error("Soemthing went wrong");
-      console.log(error)
+      console.log(error);
     } finally {
       setLoading(false);
       setOpen(false);

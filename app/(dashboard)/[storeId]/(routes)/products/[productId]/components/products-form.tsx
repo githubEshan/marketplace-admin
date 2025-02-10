@@ -122,9 +122,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     }
   };
 
+
   const onDelete = async () => {
     try {
-      await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
+      await axios.delete(
+        `/api/${params.storeId}/products/${params.productId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: { userId },
+        }
+      );
+
       router.refresh();
       router.push("/");
       toast.success("product deleted");
