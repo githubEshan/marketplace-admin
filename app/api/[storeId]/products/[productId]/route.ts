@@ -82,17 +82,6 @@ export async function PATCH(
             return new NextResponse("Product ID is required", {status: 400})
         }
 
-        const storeByUserId = await prismadb.store.findFirst({
-            where: {
-                id : params.storeId,
-                userId
-            }
-        })
-
-        if(!storeByUserId) {
-            return new NextResponse("Unauthorized", {status: 403})
-        }
-
         await prismadb.product.update({
             where: {
                 id: params.productId,
