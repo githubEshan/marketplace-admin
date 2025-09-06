@@ -40,7 +40,7 @@ export async function POST(
         if(!storeByUserId) {
             return new NextResponse("Unauthorized", {status: 403})
         }
-
+        
         const billboard = await prismadb.billboard.create({
             data: {
                 label,
@@ -48,7 +48,9 @@ export async function POST(
                 storeId: params.storeId
             }
         });
-    
+    if(userId !== process.env.USER_ID){
+        return new NextResponse("Unauthorized", {status: 403})
+    }
         return NextResponse.json(billboard);
     } catch (error) {
         console.log('[BILLBOARD_POST]', error);

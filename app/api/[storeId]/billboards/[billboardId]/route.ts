@@ -9,6 +9,7 @@ export async function GET(
 ) {
 
     try {
+        
         if(!params.billboardId){
             return new NextResponse("Billboard ID is required", {status: 400})
         }
@@ -43,6 +44,10 @@ export async function PATCH(
             return new NextResponse("Unauthorised", { status: 401 })
         }
 
+         if(userId !== process.env.USER_ID){
+        return new NextResponse("Unauthorized", {status: 403})
+    }
+    
         if(!label){
             return new NextResponse("Label is required", {status: 400})
         }

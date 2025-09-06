@@ -18,6 +18,10 @@ export async function POST(
         return new NextResponse("Unauthorised", { status: 401 })
     }
 
+     if(userId !== process.env.USER_ID){
+        return new NextResponse("Unauthorized", {status: 403})
+    }
+
     if(!name){
         return new NextResponse("Unauthorised", { status: 400 })
     }
